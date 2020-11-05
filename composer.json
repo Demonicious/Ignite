@@ -1,0 +1,26 @@
+{
+    "name": "demonicious/ignite",
+    "description": "A Minimal CMS geared towards Developers & Designers, rigged for simplicity and developer experience.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mudassar",
+            "email": "demoncious@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "files": [
+            "Core/Helpers/paths.php"
+        ],
+        "psr-4": {
+            "Ignite\\": "Core/",
+            "App\\": "App/"
+        }
+    },
+    "require": {
+        "illuminate/database": "^8.13",
+        "illuminate/events": "^8.13"
+    }
+}

@@ -1,0 +1,31 @@
+<?php
+
+define('BASE_PATH', __DIR__ . '/');
+require_once(BASE_PATH . 'vendor/autoload.php');
+
+$cli = new Ignite\CLI\Application();
+
+$cli->register_command('help', function($response, $argv) {
+    $response->echo(
+        $response->yellow('Ignite CLI v1.0')
+    )->nl()->echo(
+        $response->default('This CLI is used to manage only the most crucial features of your application, such as Database Migrations, Database Seeding, Scaffolding Themes & Plugins etc...')
+    )->nl()->nl()->echo(
+        $response->blue('A List of available commands is given below:')
+    );
+
+    $commands = [
+        'database:migrate',
+        'database:rollback',
+        'plugin:scaffold [Author]/[Plugin-Name]',
+        'theme:scaffold [Author]/[Theme-Name]'
+    ];
+
+    foreach($commands as $command) {
+        $response->nl()->echo(
+            $response->green('• ' . $command)
+        );
+    }
+});
+
+$cli->dispatch($argv);
