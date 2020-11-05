@@ -13,13 +13,14 @@ class Application {
 
     public function dispatch($argv) {
         $name = 'help';
-        if(isset($argv[2])) {
-            $name = $argv[2];
+        if(isset($argv[1])) {
+            $name = $argv[1];
         }
 
         $command = isset($this->registry[$name]) ? $this->registry[$name] : null;
         if($command) {
-            return $this->registry[$name]($this->responder, $argv);
+            $args = array_splice($argv, 2);
+            return $this->registry[$name]($this->responder, $args);
         } else {
             $this->responder->echo('Invalid Command.');
         }

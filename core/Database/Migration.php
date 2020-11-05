@@ -1,11 +1,15 @@
 <?php namespace Ignite\Database;
 
 class Migration {
-    protected function update() {
+    protected function schema() {
+        return \Ignite\Database\Instance::Schema();
+    }
+
+    public function update() {
 
     }
 
-    protected function rollback() {
+    public function rollback() {
         
     }
 }

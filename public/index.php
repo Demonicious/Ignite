@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_PATH' , __DIR__ . '/');
+define('BASE_PATH' , realpath(__DIR__ . '/../') . DIRECTORY_SEPARATOR);
 
 require_once(BASE_PATH . 'vendor/autoload.php');
 

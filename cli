@@ -3,9 +3,13 @@
 define('BASE_PATH', __DIR__ . '/');
 require_once(BASE_PATH . 'vendor/autoload.php');
 
+\Ignite\Database\Instance::Initialize(
+    \Ignite\Config::Load('database')
+);
+
 $cli = new Ignite\CLI\Application();
 
-$cli->register_command('help', function($response, $argv) {
+$cli->register_command('help', function($response) {
     $response->echo(
         $response->yellow('Ignite CLI v1.0')
     )->nl()->echo(
@@ -23,7 +27,81 @@ $cli->register_command('help', function($response, $argv) {
 
     foreach($commands as $command) {
         $response->nl()->echo(
-            $response->green('• ' . $command)
+            $response->green(' • ' . $command)
+        );
+    }
+});
+
+$cli->register_command('database:rollback', function($response, $arguments) {
+    if(isset($arguments[0]) && $name = $arguments[0]) {
+        $updated_migrations = json_decode(file_get_contents(BASE_PATH . 'store/migrations/record.json'), true);
+        if(in_array($name, $updated_migrations)) {
+            $i = array_search($name, $updated_migrations);
+            $class = "\\Migrations\\$name";
+            $m = new $class();
+            $m->rollback();
+
+            array_splice($updated_migrations, $i, 1);
+            file_put_contents(BASE_PATH . 'store/migrations/record.json', json_encode($updated_migrations));
+            $response->echo(
+                $response->green('Successfully rolled back migration: ' . $class)
+            );
+        } else
+            $response->echo($response->green('This migration has not been updated yet. Nothing to rollback.'));
+    } else $response->echo($response->red('Invalid migration name.'));
+
+    return;
+});
+
+$cli->register_command('database:migrate', function($response, $arguments) {
+    $updated_migrations = json_decode(file_get_contents(BASE_PATH . 'store/migrations/record.json'), true);
+
+    if(isset($arguments[0]) && $name = $arguments[0]) {
+        if(in_array($name, $updated_migrations)) {
+            $response->echo(
+                $response->red('This migration has already been updated.')
+            );
+        } else {
+            $class = "\\Migrations\\$name";
+            if(class_exists($class)) {
+                $m = new $class();
+                $m->update();
+    
+                array_push($updated_migrations, $name);
+                file_put_contents(BASE_PATH . 'store/migrations/record.json', json_encode($updated_migrations));
+                $response->echo(
+                    $response->green('Successfully updated migration: ' . $class)
+                );
+            } else {
+                $response->echo(
+                    $response->red('Migration not found.')
+                );
+            }
+        }
+    } else {
+        $migrations = array_map(function($e) {
+            return strrev(
+                explode('.', strrev($e))[1]
+            );
+        }, array_filter(scandir(BASE_PATH . 'migrations'), function($e) {
+            return $e != '.' && $e != '..';
+        }));
+
+
+        foreach($migrations as $migration) {
+            if($migration && !in_array($migration, $updated_migrations)) {
+                require_once(BASE_PATH . 'migrations/' . $migration . '.php');
+                $class = "\\Migrations\\$migration";
+                $mig = new $class();
+                $mig->update();
+
+                array_push($updated_migrations, $migration);
+            }
+        }
+
+        file_put_contents(BASE_PATH . 'store/migrations/record.json', json_encode($updated_migrations));
+        $response->echo(
+            $response->green('Successfully updated all new migrations.')
         );
     }
 });

@@ -11,12 +11,12 @@ class Application {
         $this->response = new Http\Response();
 
         Database\Instance::Initialize(
-            $this->config->database
+            $this->config['database']
         );
 
         $this->is_backend = detect_backend_path(
             $this->request->getUri(),
-            $this->config->cms['backend_path']
+            $this->config['cms']['backend_path']
         );
 
         print_r($this);

@@ -1,4 +1,4 @@
-RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /index.php?path=$1 [NC,L,QSA]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule !\.(js|gif|css|jpg|png|svg|webm|webp|mov|mp3|mp4)$ public/$1 [L]
+</IfModule>

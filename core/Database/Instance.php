@@ -30,6 +30,10 @@ class Instance {
     }
 
     static function Schema() {
-        return self::$capsule::schema();
+        return self::$capsule->schema();
+    }
+
+    static function QueryBuilder() {
+        return self::$capsule;
     }
 }

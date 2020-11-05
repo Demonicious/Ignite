@@ -15,8 +15,9 @@
             "Core/Helpers/paths.php"
         ],
         "psr-4": {
-            "Ignite\\": "Core/",
-            "App\\": "App/"
+            "Ignite\\": "core/",
+            "Migrations\\": "migrations/",
+            "Plugins\\": "app/plugins/"
         }
     },
     "require": {
