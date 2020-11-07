@@ -1,5 +1,7 @@
 <?php
 
+define('THEME_BASE', __DIR__ . '/');
+
 return [
     // Meta Information
     'name'   => 'Default Theme',
@@ -11,12 +13,13 @@ return [
         'url'   => 'https://github.com/demonicious'
     ],
 
-    'static_dir' => 'static',
     'preview' => [
         'thumbnail' => '',
         'full'      => ''
     ],
 
-    'settings' => require_once('settings.php'),
-    'routes'   => require_once('routes.php')
+    'content' => 'content/',
+    'pages'    => "pages/",
+
+    'settings_form' => require_once('settings.php'),
 ];

@@ -18,9 +18,6 @@ class Application {
             $this->request->getUri(),
             $this->config['cms']['backend_path']
         );
-
-        print_r($this);
-        exit;
     }
 
     public function run() {
