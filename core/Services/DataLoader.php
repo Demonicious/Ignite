@@ -1,6 +1,17 @@
 <?php namespace Ignite\Services;
 
 class DataLoader {
+    public static function Theme() {
+        $current = \Ignite\Config::Get('cms')['default_theme'];
+        $meta    = require_once(BASE_PATH . 'app/themes/' . $current . '/theme.php');
+
+        return [
+            'name' => $current,
+            'meta' => $meta,
+            'settings' => self::ThemeSettings($current, $meta) 
+        ];
+    }
+
     public static function GetThemeDomain($name) {
         $path = BASE_PATH . 'app/themes/' . $name . '/theme.php';
         if(file_exists($path))
@@ -9,14 +20,11 @@ class DataLoader {
             throw new \Exception('Meta File "theme.php" Not found in: ' . $path);
     }
 
-    public static function ThemeSettings($name, $domain = null) {
-        $path = BASE_PATH . 'app/themes/' . $name . '/settings.php';
-        $settings = file_exists($path) ? require_once($path) : [];
+    public static function ThemeSettings($name, $meta) {
+        $domain   = $meta['domain'];
+        $settings = $meta['settings'];
 
         if(!empty($settings)) {
-            if(!$domain)
-                $domain = self::GetThemeDomain($name);
-
             $data = [];
 
             $settings_path = BASE_PATH . 'store/themes-data/' . $domain . '.json';

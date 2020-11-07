@@ -1,1 +1,0 @@
-Extract your themes in directory.

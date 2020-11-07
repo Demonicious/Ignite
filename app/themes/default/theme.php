@@ -1,6 +1,6 @@
 <?php
 
-define('THEME_BASE', __DIR__ . '/');
+define('THEME_ROOT', __DIR__ . '/');
 
 return [
     // Meta Information
@@ -13,13 +13,12 @@ return [
         'url'   => 'https://github.com/demonicious'
     ],
 
+    'assets'  => 'assets/',
     'preview' => [
         'thumbnail' => '',
         'full'      => ''
     ],
 
-    'content' => 'content/',
-    'pages'    => "pages/",
-
-    'settings_form' => require_once('settings.php'),
+    'routes'   => require_once('routes.php'),
+    'settings' => require_once('settings.php'),
 ];

@@ -6,7 +6,7 @@ class Application {
     protected $response;
     
     public function __construct() {
-        $this->config   = Config::All();
+        $this->config   = Config::Load([ 'database', 'cms' ]);
         $this->request  = new Http\Request();
         $this->response = new Http\Response();
 
@@ -21,9 +21,18 @@ class Application {
     }
 
     public function run() {
-        $this->response
-        ->setStatus(200, 'OK')
-        ->setBody('Hello!')
-        ->send();
+        if($this->is_backend) {
+            $instance = new Backend\Application(
+                $this->request,
+                $this->response
+            );
+            $instance->dispatch();
+        } else {
+            $instance = new Frontend\Application(
+                $this->request,
+                $this->response
+            );
+            $instance->dispatch();
+        }
     }
 }

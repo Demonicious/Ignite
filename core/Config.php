@@ -1,7 +1,30 @@
 <?php namespace Ignite;
 
 class Config {
-    static function All() {
+    private static $store = [];
+
+    static function GetAll() {
+        return self::$store;
+    }
+
+    static function Get($name) {
+        $config = null;
+        
+        if(is_array($name)) {
+            foreach($name as $cfg) {
+                if(array_key_exists($cfg, self::$store))
+                    $config[$cfg] = self::$store[$cfg];
+                else
+                    $config[$cfg] = null;
+            }
+        } else
+            if(array_key_exists($name, self::$store))
+                $config = self::$store[$name];
+
+        return $config;
+    }
+
+    static function LoadAll() {
         $map = [];
 
         $filenames = scandir(BASE_PATH . 'app/config');
@@ -9,7 +32,9 @@ class Config {
             if($filename != '.' && $filename != '..') {
                 $filepath = configs_path($filename);
                 if(file_exists($filepath))
-                    $map[get_filename($filename)] = require_once($filepath);
+                    $filename = get_filename($filename);
+                    $map[$filename] = require_once($filepath);
+                    self::$store[$filename] = $map[$filename];
             }
         }
 
@@ -20,20 +45,26 @@ class Config {
         if(is_array($name)) {
             $map = [];
             foreach($name as $filename) {
-                $filename = get_filename($name);
+                $filename = get_filename($filename);
                 $path = configs_path($filename . '.php');
                 $map[$filename] = file_exists($path)
                     ? require_once($path)
                     : null;
+
+                self::$store[$filename] = $map[$filename];
             }
 
             return $map;
         } else {
-            $path = configs_path(get_filename($name) . '.php');
+            $name = get_filename($name);
+            $path = configs_path($name . '.php');
 
-            return file_exists($path)
+            $current = file_exists($path)
                 ? require_once($path)
                 : null;
+
+            self::$store[$name] = $current;
+            return $current;
         }
     }
 }
