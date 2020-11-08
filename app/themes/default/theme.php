@@ -13,6 +13,8 @@ return [
         'url'   => 'https://github.com/demonicious'
     ],
 
+    'renderer' => 'default', // Alternatives: vue,react,svelte
+
     'assets'  => 'assets/',
     'preview' => [
         'thumbnail' => '',
