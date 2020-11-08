@@ -6,7 +6,7 @@ class Application {
     protected $response;
     
     public function __construct() {
-        $this->config   = Config::Load([ 'database', 'cms' ]);
+        $this->config   = Config::Load([ 'app', 'database', 'cms' ]);
         $this->request  = new Http\Request();
         $this->response = new Http\Response();
 

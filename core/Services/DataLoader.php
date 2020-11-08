@@ -7,7 +7,7 @@ class DataLoader {
 
         return [
             'name' => $current,
-            'meta' => $meta,
+            'config' => $meta,
             'settings' => self::ThemeSettings($current, $meta) 
         ];
     }

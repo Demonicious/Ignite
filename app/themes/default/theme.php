@@ -13,7 +13,7 @@ return [
         'url'   => 'https://github.com/demonicious'
     ],
 
-    'renderer' => 'default', // Alternatives: vue,react,svelte
+    'renderer' => 'default', // Alternatives: vue
 
     'assets'  => 'assets/',
     'preview' => [
