@@ -6,5 +6,5 @@ return [
     'backend_path' => 'backend',
 
     // If a Default Theme has not been selected in the Backend panel, this will be used.
-    'default_theme' => 'default'
+    'default_theme' => 'default',
 ];

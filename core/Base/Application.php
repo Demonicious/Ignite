@@ -1,6 +1,7 @@
 <?php namespace Ignite\Base;
 
 class Application {
+    protected $config;
     protected $request;
     protected $response;
 

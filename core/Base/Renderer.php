@@ -8,7 +8,7 @@ class Renderer {
     public function __construct($src_dir) {
         $this->config = \Ignite\Config::Get('app')['renderers'][$this->renderer];
         
-        $class = "\\Ignite\\Renderers\\Drivers\\".ucfirst($this->config['driver']);
+        $class = "\\Ignite\\Drivers\\Renderers\\".ucfirst($this->config['driver']);
         $this->driver = new $class();
     }
 

@@ -1,4 +1,4 @@
-<?php namespace Ignite\Renderers\Drivers;
+<?php namespace Ignite\Drivers\Renderers;
 
 class Twig extends \Ignite\Base\RendererDriver {
 

@@ -1,13 +1,12 @@
 <?php
 
 return [
-    'renderers' => [
-        'default' => [
-            'driver' => 'Twig'
-        ],
+    // The Base URL of the Application.
+    'base_url' => 'https://ignite.test/',
 
-        'vue' => [
-            'driver' => 'Node'
-        ]
+    'renderers' => [
+        'main' => [
+            'driver' => 'twig'
+        ],
     ]
 ];

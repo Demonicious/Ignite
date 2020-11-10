@@ -14,6 +14,8 @@ class Application {
             $this->config['database']
         );
 
+        Services\DataLoader::Init('Database');
+
         $this->is_backend = detect_backend_path(
             $this->request->getUri(),
             $this->config['cms']['backend_path']

@@ -1,14 +1,52 @@
 <?php namespace Ignite\Services;
 
 class DataLoader {
+    static $driver;
+
+    public static function Init($driver = 'File') {        
+        $class = "\\Ignite\\Drivers\\DataLoader\\" . ucwords($driver);
+        self::$driver = new $class();
+    }
+
     public static function Theme() {
-        $current = \Ignite\Config::Get('cms')['default_theme'];
-        $meta    = require_once(BASE_PATH . 'app/themes/' . $current . '/theme.php');
+        $current   = \Ignite\Config::Get('cms')['default_theme'];
+        $meta_file = require_once(BASE_PATH . 'app/themes/' . $current . '/theme.php');
+
+        if(!isset($meta_file['domain'])) {
+            throw new \Exception('routes OR domain undefined in theme.php for: ' . $current);
+        }
+
+        $meta = [
+            'name' => 'Base Theme',
+            'assets' => 'assets/',
+            'settings' => [],
+            'routes' => [
+                '/' => [
+                    'dispatcher' => function($response) {
+                        $response->setBody('Hello!')->send();
+                    }
+                ]
+            ],
+            'renderer' => 'main',
+            'preview' => [
+                'thumbnail' => '',
+                'full'      => '',
+            ],
+            'author' => [
+                'name' => 'Someone',
+                'email' => 'someone@somewhere.com',
+                'url' => 'http://somewhere.com'
+            ]
+        ];
+
+        foreach($meta_file as $key => $value) {
+            $meta[$key] = $value;
+        }
 
         return [
             'name' => $current,
             'config' => $meta,
-            'settings' => self::ThemeSettings($current, $meta) 
+            'settings' => self::ThemeSettings($meta) 
         ];
     }
 
@@ -20,38 +58,11 @@ class DataLoader {
             throw new \Exception('Meta File "theme.php" Not found in: ' . $path);
     }
 
-    public static function ThemeSettings($name, $meta) {
-        $domain   = $meta['domain'];
-        $settings = $meta['settings'];
+    public static function ThemeSettings($meta) {
+        return self::$driver->ThemeSettings($meta);
+    }
 
-        if(!empty($settings)) {
-            $data = [];
-
-            $settings_path = BASE_PATH . 'store/themes-data/' . $domain . '.json';
-            if(file_exists($settings_path)) {
-                $rewrite = false;
-                $data    = json_decode(file_get_contents($settings_path), true);
-                foreach($settings as $setting => $values) {
-                    if(!array_key_exists($setting, $data)) {
-                        $rewrite = true;
-                        $data[$setting] = is_array($values) ? $values['default'] : null; 
-                    }
-                }
-
-                if($rewrite) {
-                    \file_put_contents($settings_path, json_encode($data));
-                }
-            } else {
-                foreach($settings as $setting => $values) {
-                    $data[$setting] = is_array($values) ? $values['default'] : null; 
-                }
-                
-                \file_put_contents($settings_path, json_encode($data));
-            }
-
-            return $data;
-        }
-
-        return $settings;
+    public static function PageSettings($domain, $id, $schema) {
+        return self::$driver->PageSettings($domain, $id, $schema);
     }
 }

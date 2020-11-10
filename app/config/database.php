@@ -3,7 +3,7 @@
 return [
     'driver'    => 'mysql',
     'host'      => 'localhost',
-    'database'  => 'ignite-db',
+    'database'  => 'ignite_db',
     'username'  => 'root',
     'password'  => '',
     'charset'   => 'utf8',

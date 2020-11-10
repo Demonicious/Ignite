@@ -3,22 +3,13 @@
 define('THEME_ROOT', __DIR__ . '/');
 
 return [
-    // Meta Information
     'name'   => 'Default Theme',
-    'domain' => 'demonicious_default',
+    'domain' => 'demonicious_default', // MUST BE UNIQUE FOR ALL THEMES.
 
     'author' => [
         'name'  => 'Demonicious',
         'email' => 'demoncious@gmail.com',
         'url'   => 'https://github.com/demonicious'
-    ],
-
-    'renderer' => 'default', // Alternatives: vue
-
-    'assets'  => 'assets/',
-    'preview' => [
-        'thumbnail' => '',
-        'full'      => ''
     ],
 
     'routes'   => require_once('routes.php'),

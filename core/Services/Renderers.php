@@ -2,7 +2,7 @@
 
 class Renderers {
     public static function Create($name, $dir) {
-        $class = "\\Ignite\\Renderers\\" . ucfirst($name) . 'Renderer';
+        $class = "\\Ignite\\Renderers\\" . ucfirst($name);
         return new $class($dir);
     }
 }

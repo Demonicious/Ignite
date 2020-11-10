@@ -21,3 +21,9 @@ if(!function_exists('detect_backend_path')) {
         ) == $backend_path;
     }
 }
+
+if(!function_exists('route_name')) {
+    function route_name($name) {
+        return '/' . trim($name, '/');
+    }
+}

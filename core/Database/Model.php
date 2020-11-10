@@ -2,7 +2,8 @@
 
 class Model extends \Illuminate\Database\Eloquent\Model {
     protected $connection   = 'default';
-
     protected $primaryKey   = 'id';
-    protected $incrementing = true;
+    
+    public $timestamps   = true;
+    public $incrementing = true;
 }
