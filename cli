@@ -19,8 +19,9 @@ $cli->register_command('help', function($response) {
     );
 
     $commands = [
-        'database:migrate',
-        'database:rollback',
+        'migrations:run',
+        'migrations:rollback',
+        'migrations:create [Name]',
         'plugin:scaffold [Author]/[Plugin-Name]',
         'theme:scaffold [Author]/[Theme-Name]'
     ];
@@ -32,14 +33,29 @@ $cli->register_command('help', function($response) {
     }
 });
 
-$cli->register_command('database:rollback', function($response, $arguments) {
+$cli->register_command('migrations:create', function($response, $arguments) {
+    if(isset($arguments[0]) && $name = $arguments[0]) {
+        $template = file_get_contents(BASE_PATH . 'core/CLI/templates/migration.template');
+
+        $name = $name . '_' . time();
+        $template = str_replace('{{NAME}}', $name, $template);
+        
+        file_put_contents(BASE_PATH . 'migrations/' . $name . '.php', $template);
+        $response->echo(
+            $response->green('Successfully generated a new migration.')
+        );
+
+    } else $response->echo($response->red('Invalid migration name provided.'));
+});
+
+$cli->register_command('migrations:rollback', function($response, $arguments) {
     if(isset($arguments[0]) && $name = $arguments[0]) {
         $updated_migrations = json_decode(file_get_contents(BASE_PATH . 'store/migrations/record.json'), true);
         if(in_array($name, $updated_migrations)) {
             $i = array_search($name, $updated_migrations);
             $class = "\\Migrations\\$name";
             $m = new $class();
-            $m->rollback();
+            $m->down();
 
             array_splice($updated_migrations, $i, 1);
             file_put_contents(BASE_PATH . 'store/migrations/record.json', json_encode($updated_migrations));
@@ -53,7 +69,7 @@ $cli->register_command('database:rollback', function($response, $arguments) {
     return;
 });
 
-$cli->register_command('database:migrate', function($response, $arguments) {
+$cli->register_command('migrations:run', function($response, $arguments) {
     $updated_migrations = json_decode(file_get_contents(BASE_PATH . 'store/migrations/record.json'), true);
 
     if(isset($arguments[0]) && $name = $arguments[0]) {
@@ -65,7 +81,7 @@ $cli->register_command('database:migrate', function($response, $arguments) {
             $class = "\\Migrations\\$name";
             if(class_exists($class)) {
                 $m = new $class();
-                $m->update();
+                $m->up();
     
                 array_push($updated_migrations, $name);
                 file_put_contents(BASE_PATH . 'store/migrations/record.json', json_encode($updated_migrations));
@@ -93,7 +109,7 @@ $cli->register_command('database:migrate', function($response, $arguments) {
                 require_once(BASE_PATH . 'migrations/' . $migration . '.php');
                 $class = "\\Migrations\\$migration";
                 $mig = new $class();
-                $mig->update();
+                $mig->up();
 
                 array_push($updated_migrations, $migration);
             }

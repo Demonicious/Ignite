@@ -5,11 +5,11 @@ class Migration {
         return \Ignite\Database\Instance::Schema();
     }
 
-    public function update() {
+    public function up() {
 
     }
 
-    public function rollback() {
+    public function down() {
         
     }
 }

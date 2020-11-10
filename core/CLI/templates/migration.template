@@ -1,0 +1,11 @@
+<?php namespace Migrations;
+
+class {{NAME}} extends \Ignite\Database\Migration {
+    public function up() {
+        // Modify the database schema.
+    }
+
+    public function down() {
+        // Rollback the changes.
+    }
+}

@@ -9,7 +9,19 @@ class DataLoader {
     }
 
     public static function Theme() {
-        $current   = \Ignite\Config::Get('cms')['default_theme'];
+        $current = \Ignite\Config::Get('cms')['default_theme'];
+
+        $item = \Ignite\Database\Models\AppSetting::select('value')->where('setting', 'current_theme')->first();
+        if($item)
+            $current = $item->value;
+        else {
+            $item = new \Ignite\Database\Models\AppSetting();
+            $item->setting = 'current_theme';
+            $item->value   = $current;
+
+            $item->save();
+        }
+
         $meta_file = require_once(BASE_PATH . 'app/themes/' . $current . '/theme.php');
 
         if(!isset($meta_file['domain'])) {
@@ -64,5 +76,9 @@ class DataLoader {
 
     public static function PageSettings($domain, $id, $schema) {
         return self::$driver->PageSettings($domain, $id, $schema);
+    }
+
+    public static function PageData($map) {
+
     }
 }

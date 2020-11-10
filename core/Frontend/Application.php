@@ -19,7 +19,7 @@ class Application extends \Ignite\Base\Application {
                 'method'     => 'GET',
                 'view'       => null,
                 'layout'     => null,
-                'dispatcher' => null,
+                'handler'    => null,
                 'data'       => [],
                 'settings'   => [],
                 'routes'     => [],
@@ -53,17 +53,29 @@ class Application extends \Ignite\Base\Application {
         if($route['code'] < 400) {
             $options = $route['route_info'];
 
-            if($options['dispatcher']) {
-                return $options['dispatcher'](
-                    $this->response,
-                    $this->request,
+            $settings = \Ignite\Services\DataLoader::PageSettings($this->theme['config']['domain'], $options['id'], $options['settings']);
+            $data     = \Ignite\Services\DataLoader::PageData($route['route_info']['data']);
+
+            if($options['handler']) {
+                return $options['handler'](
                     [
                         'config'   => $this->config,
-                        'theme'    => $this->theme,
-                        'settings' => \Ignite\Services\DataLoader::PageSettings($this->theme['config']['domain'], $options['id'], $options['settings']),
-                        'params'   => $route['uri_params'],
-                        'data'     => []
-                    ]
+                        'page' => [
+                            'settings' => $settings,
+                            'data'     => $data,
+                            'params'   => $route['uri_params']
+                        ],
+                        'theme'    => [
+                            'name' => $this->theme['config']['name'],
+                            'domain' => $this->theme['config']['domain'],
+                            'settings' => $this->theme['config']['settings'],
+                            'preview' => $this->theme['config']['preview'],
+                            'author' => $this->theme['config']['author'],
+                            'assets' => $this->config['app']['base_url'] . 'app/themes/' . $this->theme['name'] . '/' . $this->theme['config']['assets']
+                        ],
+                    ],
+                    $this->response,
+                    $this->request,
                 );
             }
         } else 

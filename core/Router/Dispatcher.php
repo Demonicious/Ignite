@@ -12,9 +12,10 @@ class Dispatcher {
 
     private function decode_uri($uri) {
         if(strlen($uri) > 1)
-            $uri = trim($uri, '/');
+            $uri = route_name($uri);
         if(false != $pos = strpos($uri, '?'))
             $uri = substr($uri, 0, $pos);
+
         return rawurldecode($uri);
     }
 

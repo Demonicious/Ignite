@@ -3,10 +3,19 @@
 return [
     '/' => [
         'id' => 'homepage',
-        'dispatcher' => function($response) {
+        'handler' => function($options, $response) {
             $response->setStatus(200)
-            ->json([ 'hi' => 'fellow' ])
+            ->json($options)
             ->send();
         }
     ],
+
+    '/test/{id}' => [
+        'id' => 'Test',
+        'handler' => function($options, $response) {
+            $response->setStatus(200)
+            ->json($options)
+            ->send();
+        }
+    ]
 ];
