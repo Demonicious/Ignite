@@ -49,7 +49,9 @@ class DataLoader {
                 'name' => 'Someone',
                 'email' => 'someone@somewhere.com',
                 'url' => 'http://somewhere.com'
-            ]
+            ],
+            'error_page'       => null,
+            'maintenance_page' => null,
         ];
 
         foreach($meta_file as $key => $value) {

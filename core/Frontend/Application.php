@@ -19,7 +19,7 @@ class Application extends \Ignite\Base\Application {
         foreach($routes as $route => $options) {
             $resolver = [
                 'id'          => null,
-                'title'       => 'Page',
+                'title'       => '',
                 'description' => '',
                 'keywords'    => '',
                 'method'      => 'GET',
@@ -54,13 +54,13 @@ class Application extends \Ignite\Base\Application {
     }
 
     public function send_error($code = 404, $message = 'Resource Not Found!') {
-        if(isset($this->theme['config']['error_page'])) {
+        if($this->theme['config']['error_page']) {
 
         } else $this->response->setStatus($code, $message)->setBody($message)->send();
     }
 
     public function maintenance_page() {
-        if(isset($this->theme['config']['maintenance_page'])) {
+        if($this->theme['config']['maintenance_page']) {
 
         } else $this->response->setStatus(503, 'Maintenance')->setBody('This website is currently down for maintenance purposes.')->send();
     }
