@@ -36,12 +36,28 @@ class Database extends \Ignite\Base\DataLoaderDriver {
                 $entry->settings = json_encode($data);
                 $entry->save();
             }
+
+            return $data;
         }
 
         return $settings;
     }
 
     public function PageSettings($domain, $id, $settings) {
+        return [
+            'title' => '',
+            'description' => '',
+            'keywords' => ''
+        ];
+    }
 
+    public function AppSettings() {
+        $items = \Ignite\Database\Models\AppSetting::all();
+        $records = [];
+        foreach($items as $item) {
+            $records[$item->setting] = $item->value;
+        }
+
+        return $records;
     }
 }

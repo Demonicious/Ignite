@@ -9,6 +9,4 @@ return [
             ->send();
         },
     ],
-
-    '/api/v1' => require_once(THEME_ROOT . 'src/api/routes.php')
 ];

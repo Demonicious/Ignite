@@ -1,6 +1,7 @@
 <?php namespace Ignite\Services;
 
 class DataLoader {
+    static $app_settings = [];
     static $driver;
 
     public static function Init($driver = 'File') {        
@@ -80,5 +81,16 @@ class DataLoader {
 
     public static function PageData($map) {
 
+    }
+
+    public static function AppSettings($name = null) {
+        if(empty(self::$app_settings)) {
+            self::$app_settings = self::$driver->AppSettings();
+        }
+
+        if($name) {
+            return isset(self::$app_settings[$name]) ? self::$app_settings[$name] : null;
+        } else
+            return self::$app_settings;
     }
 }

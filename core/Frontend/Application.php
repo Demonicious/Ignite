@@ -8,21 +8,27 @@ class Application extends \Ignite\Base\Application {
         $this->theme    = \Ignite\Services\DataLoader::Theme();
         $this->renderer = \Ignite\Services\Renderers::Create($this->theme['config']['renderer'], THEME_ROOT);
 
+        if(\Ignite\Services\DataLoader::AppSettings('maintenance_mode')) {
+            $this->maintenance_page();
+        }
+
         $this->create_routes();
     }
 
     private function recursive_route_mapper($router, $routes) {
         foreach($routes as $route => $options) {
             $resolver = [
-                'id'         => null,
-                'title'      => 'Page',
-                'method'     => 'GET',
-                'view'       => null,
-                'layout'     => null,
-                'handler'    => null,
-                'data'       => [],
-                'settings'   => [],
-                'routes'     => [],
+                'id'          => null,
+                'title'       => 'Page',
+                'description' => '',
+                'keywords'    => '',
+                'method'      => 'GET',
+                'view'        => null,
+                'layout'      => null,
+                'handler'     => null,
+                'data'        => [],
+                'settings'    => [],
+                'routes'      => [],
             ];
 
             foreach($options as $key => $value) {
@@ -47,6 +53,18 @@ class Application extends \Ignite\Base\Application {
         });
     }
 
+    public function send_error($code = 404, $message = 'Resource Not Found!') {
+        if(isset($this->theme['config']['error_page'])) {
+
+        } else $this->response->setStatus($code, $message)->setBody($message)->send();
+    }
+
+    public function maintenance_page() {
+        if(isset($this->theme['config']['maintenance_page'])) {
+
+        } else $this->response->setStatus(503, 'Maintenance')->setBody('This website is currently down for maintenance purposes.')->send();
+    }
+
     public function dispatch() {
         $route = $this->router->dispatch($this->request->getUri(), $this->request->getMethod());
 
@@ -59,26 +77,31 @@ class Application extends \Ignite\Base\Application {
             if($options['handler']) {
                 return $options['handler'](
                     [
-                        'config'   => $this->config,
+                        'config' => $this->config,
                         'page' => [
-                            'settings' => $settings,
-                            'data'     => $data,
-                            'params'   => $route['uri_params']
+                            'title'       => $settings['title'],
+                            'description' => $settings['description'],
+                            'keywords'    => $settings['keywords'],
+                            'settings'    => $settings,
+                            'params'      => $route['uri_params'],
+                            'data'        => $data,
                         ],
-                        'theme'    => [
-                            'name' => $this->theme['config']['name'],
-                            'domain' => $this->theme['config']['domain'],
-                            'settings' => $this->theme['config']['settings'],
-                            'preview' => $this->theme['config']['preview'],
-                            'author' => $this->theme['config']['author'],
-                            'assets' => $this->config['app']['base_url'] . 'app/themes/' . $this->theme['name'] . '/' . $this->theme['config']['assets']
+                        'theme' => [
+                            'name'     => $this->theme['config']['name'],
+                            'domain'   => $this->theme['config']['domain'],
+                            'preview'  => $this->theme['config']['preview'],
+                            'author'   => $this->theme['config']['author'],
+                            'assets'   => $this->config['app']['base_url'] . 'app/themes/' . $this->theme['name'] . '/' . $this->theme['config']['assets'],
+                            'settings' => $this->theme['settings']
                         ],
                     ],
                     $this->response,
-                    $this->request,
+                    $this->request
                 );
-            }
+            } else if($options['view']) {
+
+            } $this->send_error(404, 'No handler specified for this route.');
         } else 
-            $this->response->setStatus($route['code'], $route['msg'])->setBody($route['msg'])->send();
+            $this->send_error($route['code'], $route['msg']);
     }
 }
